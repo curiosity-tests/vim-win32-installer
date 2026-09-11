@@ -1,4 +1,5 @@
 name: Build Vim
+run-name: "Build Vim ${{ inputs.leg || github.event_name }} ${{ inputs.racecar_run }}"
 
 on:
   push:
@@ -21,10 +22,24 @@ on:
         required: true
         type: string
 
+      leg:
+        description: "baseline (uninstrumented) or instrumented (under chalk/curiosity)"
+        type: choice
+        options: [instrumented, baseline]
+        default: baseline
+      profile:
+        description: "CrashOverride chalk profile"
+        type: string
+        default: curiosity-tests-racecar
+      racecar_run:
+        description: "racecar correlation token, echoed into the run name"
+        type: string
+        default: ""
 permissions:
   contents: read
 
 env:
+  CHALK_ON: ${{ inputs.leg == 'instrumented' }}
   VIMREPO: https://github.com/vim/vim
   DEPENDENCIES: 'C:\dependencies'
   GETTEXT_PATH: 'C:\dependencies\msys64\usr\bin'  # msgfmt, etc.
@@ -264,25 +279,6 @@ jobs:
             #pyreg: ""
             sys: mingw64
             os: windows-latest
-          - arch: x86
-            vcarch: x86
-            warch: ia32
-            sodiumarch: Win32
-            bits: 32
-            #cygreg: registry32
-            #pyreg: "-32"
-            sys: mingw32
-            os: windows-latest
-          - arch: arm64
-            vcarch: arm64
-            warch: ''
-            sodiumarch: ARM64
-            bits: 64
-            #cygreg: registry
-            #pyreg: ""
-            sys: clangarm64
-            os: windows-11-arm
-
     steps:
     - name: Initialize
       id: init
