@@ -9,8 +9,6 @@ on:
     - vimrev.txt
     - vimver.txt
   pull_request:
-  schedule:
-  - cron: '0 22 * * *'
   workflow_dispatch:
     inputs:
       tag:
